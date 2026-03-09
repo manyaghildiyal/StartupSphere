@@ -1,0 +1,1 @@
+developed with 💕love💕 and care by *Manya* and *Gungun*
