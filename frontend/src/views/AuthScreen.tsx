@@ -15,6 +15,27 @@ export default function AuthScreen({ initialMode, onAuth }: AuthScreenProps) {
   const [form, setForm] = useState({ name: '', email: '', password: '', role: 'startup' as Role })
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
+  const [otpMode, setOtpMode] = useState(false)
+  const [otp, setOtp] = useState('')
+
+  async function handleVerify(e: FormEvent) {
+    e.preventDefault()
+    setError('')
+    setLoading(true)
+    try {
+      const res = await fetch(`${API}/api/auth/verify-otp`, {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: form.email, otp }),
+      })
+      const data = await res.json()
+      if (!res.ok) setError(data.error || 'Something went wrong.')
+      else onAuth(data.user, data.token)
+    } catch {
+      setError('Could not connect to server.')
+    } finally {
+      setLoading(false)
+    }
+  }
 
   async function handleSubmit(e: FormEvent) {
     e.preventDefault()
@@ -30,8 +51,19 @@ export default function AuthScreen({ initialMode, onAuth }: AuthScreenProps) {
         body: JSON.stringify(body),
       })
       const data = await res.json()
-      if (!res.ok) setError(data.error || 'Something went wrong.')
-      else onAuth(data.user, data.token)
+      if (!res.ok) {
+        if (data.needsVerification) {
+          setOtpMode(true)
+        } else {
+          setError(data.error || 'Something went wrong.')
+        }
+      } else {
+        if (mode === 'register') {
+          setOtpMode(true)
+        } else {
+          onAuth(data.user, data.token)
+        }
+      }
     } catch {
       setError('Could not connect to server. Is it running?')
     } finally {
@@ -187,29 +219,61 @@ export default function AuthScreen({ initialMode, onAuth }: AuthScreenProps) {
 
         {/* heading */}
         <h2 style={{ fontSize: '1.5rem', fontWeight: 800, letterSpacing: '-0.03em', color: '#0F172A', margin: '0 0 0.35rem' }}>
-          {mode === 'register' ? 'Create your account' : 'Welcome back'}
+          {otpMode ? 'Verify your email' : mode === 'register' ? 'Create your account' : 'Welcome back'}
         </h2>
         <p style={{ fontSize: '0.87rem', color: '#64748B', margin: '0 0 1.75rem' }}>
-          {mode === 'register'
+          {otpMode ? `We sent a 6-digit code to ${form.email}.` : mode === 'register'
             ? 'Join the AI-powered startup-investor platform'
             : 'Sign in to continue to your dashboard'}
         </p>
 
         {/* tab switcher */}
-        <div style={{
-          display: 'flex', gap: 4, background: '#F1F5F9',
-          borderRadius: 100, padding: 4, marginBottom: '1.75rem',
-        }}>
-          {(['register', 'login'] as const).map(m => (
-            <button key={m} className={`auth-tab-btn ${mode === m ? 'active' : ''}`}
-              onClick={() => { setMode(m); setError('') }}>
-              {m === 'register' ? 'Register' : 'Sign in'}
-            </button>
-          ))}
-        </div>
+        {!otpMode && (
+          <div style={{
+            display: 'flex', gap: 4, background: '#F1F5F9',
+            borderRadius: 100, padding: 4, marginBottom: '1.75rem',
+          }}>
+            {(['register', 'login'] as const).map(m => (
+              <button key={m} className={`auth-tab-btn ${mode === m ? 'active' : ''}`}
+                onClick={() => { setMode(m); setError('') }}>
+                {m === 'register' ? 'Register' : 'Sign in'}
+              </button>
+            ))}
+          </div>
+        )}
 
         {/* form */}
-        <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+        {otpMode ? (
+          <form onSubmit={handleVerify} style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+            <div>
+              <label style={{ fontSize: '0.78rem', fontWeight: 700, color: '#374151', marginBottom: 6, display: 'block', letterSpacing: '0.03em', textTransform: 'uppercase' }}>6-digit Code</label>
+              <div style={{ position: 'relative' }}>
+                <Lock size={15} strokeWidth={2} color="#94A3B8" style={{ position: 'absolute', left: 14, top: '50%', transform: 'translateY(-50%)', pointerEvents: 'none' }} />
+                <input className="auth-field-input" type="text" placeholder="123456" maxLength={6}
+                  value={otp} onChange={e => setOtp(e.target.value.replace(/\D/g, ''))} />
+              </div>
+            </div>
+            {error && (
+              <div style={{
+                display: 'flex', alignItems: 'center', gap: 8,
+                background: 'rgba(239,68,68,0.07)', border: '1px solid rgba(239,68,68,0.2)',
+                borderRadius: 10, padding: '10px 14px',
+                fontSize: '0.82rem', color: '#EF4444',
+              }}>
+                <AlertCircle size={14} strokeWidth={2} style={{ flexShrink: 0 }} />
+                {error}
+              </div>
+            )}
+            <button type="submit" className="auth-submit-btn" disabled={loading || otp.length !== 6}>
+              {loading ? 'Verifying…' : 'Verify & Sign in'}
+              {!loading && <ArrowRight size={15} strokeWidth={2.5} />}
+            </button>
+            <p style={{ textAlign: 'center', fontSize: '0.84rem', color: '#64748B', marginTop: '1rem', marginBottom: 0 }}>
+              <button type="button" className="auth-link-btn" onClick={() => { setOtpMode(false); setError('') }}>Back</button>
+            </p>
+          </form>
+        ) : (
+          <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
 
           {mode === 'register' && (
             <>
@@ -290,15 +354,18 @@ export default function AuthScreen({ initialMode, onAuth }: AuthScreenProps) {
             {!loading && <ArrowRight size={15} strokeWidth={2.5} />}
           </button>
         </form>
+        )}
 
         {/* footer */}
-        <p style={{ textAlign: 'center', fontSize: '0.84rem', color: '#64748B', marginTop: '1.5rem', marginBottom: 0 }}>
-          {mode === 'register' ? 'Already have an account? ' : "Don't have an account? "}
-          <button className="auth-link-btn"
-            onClick={() => { setMode(mode === 'register' ? 'login' : 'register'); setError('') }}>
-            {mode === 'register' ? 'Sign in' : 'Register'}
-          </button>
-        </p>
+        {!otpMode && (
+          <p style={{ textAlign: 'center', fontSize: '0.84rem', color: '#64748B', marginTop: '1.5rem', marginBottom: 0 }}>
+            {mode === 'register' ? 'Already have an account? ' : "Don't have an account? "}
+            <button className="auth-link-btn"
+              onClick={() => { setMode(mode === 'register' ? 'login' : 'register'); setError('') }}>
+              {mode === 'register' ? 'Sign in' : 'Register'}
+            </button>
+          </p>
+        )}
       </div>
     </div>
   )

@@ -1,4 +1,4 @@
-import { Users, DollarSign, Zap, Send, CheckCircle, TrendingUp } from 'lucide-react'
+import { Users, DollarSign, Zap, Send, CheckCircle, TrendingUp, Bookmark } from 'lucide-react'
 import type { StartupProfile } from '../types/types'
 import StageChip from './StageChip'
 import { fmt } from '../utils/ml'
@@ -12,13 +12,15 @@ type StartupCardProps = {
   onMsg: (v: string) => void
   onSend: () => void
   sent: boolean
+  bookmarked?: boolean
+  onToggleBookmark?: () => void
 }
 
 const STAGE_COLORS: Record<string, string> = {
   idea: '#F59E0B', mvp: '#4F7EF7', growth: '#22C55E', scale: '#A855F7',
 }
 
-export default function StartupCard({ s, score, matchScore, owner, msg, onMsg, onSend, sent }: StartupCardProps) {
+export default function StartupCard({ s, score, matchScore, owner, msg, onMsg, onSend, sent, bookmarked, onToggleBookmark }: StartupCardProps) {
   const stageColor = STAGE_COLORS[s.stage] ?? '#4F7EF7'
 
   return (
@@ -60,17 +62,34 @@ export default function StartupCard({ s, score, matchScore, owner, msg, onMsg, o
             border: '1px solid rgba(79,126,247,0.15)',
           }}>{s.industry}</span>
         </div>
-        {matchScore !== undefined && (
-          <div style={{
-            display: 'flex', alignItems: 'center', gap: 5,
-            background: 'linear-gradient(135deg, rgba(79,126,247,0.10), rgba(123,94,248,0.10))',
-            border: '1px solid rgba(79,126,247,0.18)',
-            borderRadius: 100, padding: '5px 10px', flexShrink: 0,
-          }}>
-            <Zap size={11} strokeWidth={2.5} color="#4F7EF7" />
-            <span style={{ fontSize: '0.75rem', fontWeight: 800, color: '#4F7EF7' }}>{matchScore}%</span>
-          </div>
-        )}
+        <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+          {matchScore !== undefined && (
+            <div style={{
+              display: 'flex', alignItems: 'center', gap: 5,
+              background: 'linear-gradient(135deg, rgba(79,126,247,0.10), rgba(123,94,248,0.10))',
+              border: '1px solid rgba(79,126,247,0.18)',
+              borderRadius: 100, padding: '5px 10px', flexShrink: 0,
+            }}>
+              <Zap size={11} strokeWidth={2.5} color="#4F7EF7" />
+              <span style={{ fontSize: '0.75rem', fontWeight: 800, color: '#4F7EF7' }}>{matchScore}%</span>
+            </div>
+          )}
+          {onToggleBookmark && (
+            <button
+              onClick={onToggleBookmark}
+              style={{
+                background: 'none', border: 'none', cursor: 'pointer', padding: 0,
+                display: 'flex', alignItems: 'center', justifyContent: 'center',
+                color: bookmarked ? '#4F7EF7' : '#CBD5E1',
+                transition: 'color 0.2s, transform 0.2s',
+              }}
+              onMouseEnter={e => { (e.currentTarget as HTMLButtonElement).style.transform = 'scale(1.1)' }}
+              onMouseLeave={e => { (e.currentTarget as HTMLButtonElement).style.transform = 'scale(1)' }}
+            >
+              <Bookmark size={20} fill={bookmarked ? '#4F7EF7' : 'none'} strokeWidth={2} />
+            </button>
+          )}
+        </div>
       </div>
 
       {/* meta pills */}

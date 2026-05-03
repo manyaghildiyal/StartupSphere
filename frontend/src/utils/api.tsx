@@ -38,18 +38,29 @@ export type InvestorProfile = {
   preferredStage: 'idea' | 'mvp' | 'growth' | 'scale'
 }
 
-export type ContactRequest = {
+export type ChatMessage = {
   id: string
-  investorUserId: string
-  investorName: string
-  startupUserId: string
-  message: string
+  senderId: string
+  receiverId: string
+  text: string
   createdAt: string
+}
+
+export type ChatConversation = {
+  userId: string
+  userName: string
+  userRole: string
+  lastMessage: string
+  lastMessageAt: string
+  unreadCount: number
 }
 
 export const api = {
   register(body: { name: string; email: string; password: string; role: string }) {
-    return request<AuthPayload>('/auth/register', { method: 'POST', body: JSON.stringify(body) })
+    return request<{ message: string; user: AuthPayload['user'] }>('/auth/register', { method: 'POST', body: JSON.stringify(body) })
+  },
+  verifyOtp(body: { email: string; otp: string }) {
+    return request<AuthPayload>('/auth/verify-otp', { method: 'POST', body: JSON.stringify(body) })
   },
   login(body: { email: string; password: string }) {
     return request<AuthPayload>('/auth/login', { method: 'POST', body: JSON.stringify(body) })
@@ -80,10 +91,22 @@ export const api = {
     return request<{ profile: InvestorProfile }>('/investors/me', { method: 'POST', body: JSON.stringify(body) })
   },
 
-  sendRequest(body: { startupUserId: string; message: string }) {
-    return request<{ request: ContactRequest }>('/requests', { method: 'POST', body: JSON.stringify(body) })
+  sendMessage(body: { receiverId: string; text: string }) {
+    return request<{ message: ChatMessage }>('/messages', { method: 'POST', body: JSON.stringify(body) })
   },
-  getInbox() {
-    return request<{ requests: ContactRequest[] }>('/requests/inbox')
+  getConversations() {
+    return request<{ conversations: ChatConversation[] }>('/messages/conversations')
+  },
+  getMessages(otherUserId: string) {
+    return request<{ messages: ChatMessage[] }>(`/messages/${otherUserId}`)
+  },
+  markAsRead(otherUserId: string) {
+    return request<{ success: boolean }>(`/messages/${otherUserId}/read`, { method: 'POST' })
+  },
+  toggleBookmark(body: { startupUserId: string }) {
+    return request<{ bookmarked: boolean }>('/bookmarks', { method: 'POST', body: JSON.stringify(body) })
+  },
+  getBookmarks() {
+    return request<{ startups: StartupProfile[] }>('/bookmarks')
   },
 }
