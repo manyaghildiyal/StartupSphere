@@ -8,8 +8,9 @@ import StartupCard from '../components/StartupCard'
 import {
   User as UserIcon, LogOut, Building2, Briefcase, Cpu,
   Inbox, Search, Star, Upload, MessageCircle, Send,
-  CheckCircle, ChevronRight, Sparkles, BarChart2, Target, Bookmark,
+  CheckCircle, ChevronRight, Sparkles, BarChart2, Target, Bookmark, Zap,
 } from 'lucide-react'
+import RecommendationFeed from '../components/RecommendationFeed'
 
 type AppDashboardProps = {
   user: User
@@ -138,11 +139,7 @@ export default function AppDashboard({ user, onLogout }: AppDashboardProps) {
   useEffect(() => { if (user.role === 'investor') fetchStartups() }, [searchIndustry, searchStage, searchFunding, user.role])
 
   const visibleStartups  = useMemo(() => allStartups.map(s => ({ s, score: calcSuccess(s) })), [allStartups])
-  const recommendations  = useMemo(() => {
-    if (!investorProfile) return []
-    return allStartups.map(s => ({ s, match: Math.round(recScore(s, investorProfile) * 100), score: calcSuccess(s) })).sort((a, b) => b.match - a.match).slice(0, 6)
-  }, [allStartups, investorProfile])
-
+  
   const successScore = startupProfile ? calcSuccess(startupProfile) : 0
   const sectors      = investorProfile?.investmentSectors ?? []
 
@@ -152,6 +149,7 @@ export default function AppDashboard({ user, onLogout }: AppDashboardProps) {
     ? [
         { key: 'profile',    label: 'My Profile',  Icon: Building2 },
         { key: 'prediction', label: 'ML Score',     Icon: Cpu },
+        { key: 'matches',    label: 'Investor Matches', Icon: Zap },
         { key: 'messages',   label: `Messages${totalUnread ? ` (${totalUnread})` : ''}`, Icon: MessageCircle },
       ]
     : [
@@ -572,6 +570,29 @@ export default function AppDashboard({ user, onLogout }: AppDashboardProps) {
 
             {/* MESSAGES */}
             {tab === 'messages' && chatUI}
+
+            {/* MATCHES (ML RECOMMENDATIONS) */}
+            {tab === 'matches' && (
+              <div className="dash-enter" style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
+                <div className="glass-panel" style={{ padding: '1.5rem' }}>
+                  <h2 style={{ fontSize: '1.2rem', fontWeight: 800, color: '#0F172A', letterSpacing: '-0.02em', margin: '0 0 0.3rem' }}>Investor Matches</h2>
+                  <p style={{ fontSize: '0.85rem', color: '#64748B', margin: 0 }}>Recommended investors based on your industry, stage, and funding needs</p>
+                </div>
+                {!startupProfile ? (
+                  <div className="glass-panel empty-box">
+                    <div className="empty-box-icon"><Briefcase size={24} strokeWidth={1.5} color="#94A3B8" /></div>
+                    <div style={{ fontSize: '0.9rem', fontWeight: 600, color: '#64748B' }}>Complete your startup profile to see matches.</div>
+                  </div>
+                ) : (
+                  <RecommendationFeed 
+                    user={user} 
+                    onSendMessage={(rid, txt) => api.sendMessage({ receiverId: rid, text: txt }).then(() => {})}
+                    bookmarkedIds={new Set()}
+                    onToggleBookmark={async () => {}}
+                  />
+                )}
+              </div>
+            )}
           </>
         )}
 
@@ -665,27 +686,20 @@ export default function AppDashboard({ user, onLogout }: AppDashboardProps) {
               <div className="dash-enter" style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
                 <div className="glass-panel" style={{ padding: '1.5rem' }}>
                   <h2 style={{ fontSize: '1.2rem', fontWeight: 800, color: '#0F172A', letterSpacing: '-0.02em', margin: '0 0 0.3rem' }}>Recommended for You</h2>
-                  <p style={{ fontSize: '0.85rem', color: '#64748B', margin: 0 }}>Top startups ranked by compatibility with your investor profile</p>
+                  <p style={{ fontSize: '0.85rem', color: '#64748B', margin: 0 }}>Top startups ranked by compatibility with your investor profile and behavior</p>
                 </div>
                 {!investorProfile ? (
                   <div className="glass-panel empty-box">
                     <div className="empty-box-icon"><Star size={24} strokeWidth={1.5} color="#94A3B8" /></div>
                     <div style={{ fontSize: '0.9rem', fontWeight: 600, color: '#64748B' }}>Set up your investor profile first to see personalised recommendations.</div>
                   </div>
-                ) : !recommendations.length ? (
-                  <div className="glass-panel empty-box">
-                    <div className="empty-box-icon"><Sparkles size={24} strokeWidth={1.5} color="#94A3B8" /></div>
-                    <div style={{ fontSize: '0.9rem', fontWeight: 600, color: '#64748B' }}>No startups on the platform yet. Check back soon.</div>
-                  </div>
                 ) : (
-                  <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))', gap: '1.25rem' }}>
-                    {recommendations.map(({ s, match, score }) => (
-                      <StartupCard key={`rec_${s.userId}`} s={s} score={score} matchScore={match} owner={s.userId}
-                        msg={msgMap[s.userId] ?? ''} onMsg={v => setMsgMap(c => ({ ...c, [s.userId]: v }))}
-                        onSend={() => sendRequest(s.userId)} sent={sentMap[s.userId] ?? false}
-                        bookmarked={bookmarkedIds.has(s.userId)} onToggleBookmark={() => toggleBookmark(s)} />
-                    ))}
-                  </div>
+                  <RecommendationFeed 
+                    user={user} 
+                    onSendMessage={(rid, txt) => api.sendMessage({ receiverId: rid, text: txt }).then(() => {})}
+                    bookmarkedIds={bookmarkedIds}
+                    onToggleBookmark={toggleBookmark}
+                  />
                 )}
               </div>
             )}

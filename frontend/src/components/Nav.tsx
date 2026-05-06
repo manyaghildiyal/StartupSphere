@@ -163,7 +163,7 @@ export default function Nav({ view, onLogin, onRegister, onLogo, user, onLogout 
             <div className="ss-nav-logo">
               <Sparkles size={14} strokeWidth={2.5} color="#fff" />
             </div>
-            <span className="ss-nav-name">StartuSphere</span>
+            <span className="ss-nav-name">StartupSphere</span>
           </div>
 
           {/* Center links — only on landing */}

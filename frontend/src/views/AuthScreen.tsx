@@ -214,7 +214,7 @@ export default function AuthScreen({ initialMode, onAuth }: AuthScreenProps) {
           }}>
             <Sparkles size={16} color="#fff" strokeWidth={2.5} />
           </div>
-          <span style={{ fontSize: '1rem', fontWeight: 800, letterSpacing: '-0.02em', color: '#0F172A' }}>StartuSphere</span>
+          <span style={{ fontSize: '1rem', fontWeight: 800, letterSpacing: '-0.02em', color: '#0F172A' }}>StartupSphere</span>
         </div>
 
         {/* heading */}
@@ -223,7 +223,7 @@ export default function AuthScreen({ initialMode, onAuth }: AuthScreenProps) {
         </h2>
         <p style={{ fontSize: '0.87rem', color: '#64748B', margin: '0 0 1.75rem' }}>
           {otpMode ? `We sent a 6-digit code to ${form.email}.` : mode === 'register'
-            ? 'Join the AI-powered startup-investor platform'
+            ? 'Join the ML-powered startup-investor platform'
             : 'Sign in to continue to your dashboard'}
         </p>
 
@@ -275,85 +275,85 @@ export default function AuthScreen({ initialMode, onAuth }: AuthScreenProps) {
         ) : (
           <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
 
-          {mode === 'register' && (
-            <>
-              {/* name */}
-              <div>
-                <label style={{ fontSize: '0.78rem', fontWeight: 700, color: '#374151', marginBottom: 6, display: 'block', letterSpacing: '0.03em', textTransform: 'uppercase' }}>Full Name</label>
-                <div style={{ position: 'relative' }}>
-                  <UserIcon size={15} strokeWidth={2} color="#94A3B8" style={{ position: 'absolute', left: 14, top: '50%', transform: 'translateY(-50%)', pointerEvents: 'none' }} />
-                  <input className="auth-field-input" placeholder="Ada Lovelace"
-                    value={form.name} onChange={e => setForm(c => ({ ...c, name: e.target.value }))} />
+            {mode === 'register' && (
+              <>
+                {/* name */}
+                <div>
+                  <label style={{ fontSize: '0.78rem', fontWeight: 700, color: '#374151', marginBottom: 6, display: 'block', letterSpacing: '0.03em', textTransform: 'uppercase' }}>Full Name</label>
+                  <div style={{ position: 'relative' }}>
+                    <UserIcon size={15} strokeWidth={2} color="#94A3B8" style={{ position: 'absolute', left: 14, top: '50%', transform: 'translateY(-50%)', pointerEvents: 'none' }} />
+                    <input className="auth-field-input" placeholder="Ada Lovelace"
+                      value={form.name} onChange={e => setForm(c => ({ ...c, name: e.target.value }))} />
+                  </div>
                 </div>
-              </div>
 
-              {/* role picker */}
-              <div>
-                <label style={{ fontSize: '0.78rem', fontWeight: 700, color: '#374151', marginBottom: 8, display: 'block', letterSpacing: '0.03em', textTransform: 'uppercase' }}>I am a…</label>
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8 }}>
-                  {(['startup', 'investor'] as Role[]).map(r => (
-                    <label key={r} className="role-opt" style={{ cursor: 'pointer' }}>
-                      <input type="radio" name="role" value={r}
-                        checked={form.role === r}
-                        onChange={() => setForm(c => ({ ...c, role: r }))} />
-                      <div className="role-opt-box">
-                        {r === 'startup'
-                          ? <Building2 size={16} strokeWidth={2} color={form.role === r ? '#4F7EF7' : '#94A3B8'} />
-                          : <Briefcase size={16} strokeWidth={2} color={form.role === r ? '#4F7EF7' : '#94A3B8'} />}
-                        <div>
-                          <div style={{ fontSize: '0.82rem', fontWeight: 700, color: form.role === r ? '#4F7EF7' : '#374151' }}>
-                            {r === 'startup' ? 'Startup' : 'Investor'}
-                          </div>
-                          <div style={{ fontSize: '0.68rem', color: '#94A3B8' }}>
-                            {r === 'startup' ? 'Raise funding' : 'Find deals'}
+                {/* role picker */}
+                <div>
+                  <label style={{ fontSize: '0.78rem', fontWeight: 700, color: '#374151', marginBottom: 8, display: 'block', letterSpacing: '0.03em', textTransform: 'uppercase' }}>I am a…</label>
+                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8 }}>
+                    {(['startup', 'investor'] as Role[]).map(r => (
+                      <label key={r} className="role-opt" style={{ cursor: 'pointer' }}>
+                        <input type="radio" name="role" value={r}
+                          checked={form.role === r}
+                          onChange={() => setForm(c => ({ ...c, role: r }))} />
+                        <div className="role-opt-box">
+                          {r === 'startup'
+                            ? <Building2 size={16} strokeWidth={2} color={form.role === r ? '#4F7EF7' : '#94A3B8'} />
+                            : <Briefcase size={16} strokeWidth={2} color={form.role === r ? '#4F7EF7' : '#94A3B8'} />}
+                          <div>
+                            <div style={{ fontSize: '0.82rem', fontWeight: 700, color: form.role === r ? '#4F7EF7' : '#374151' }}>
+                              {r === 'startup' ? 'Startup' : 'Investor'}
+                            </div>
+                            <div style={{ fontSize: '0.68rem', color: '#94A3B8' }}>
+                              {r === 'startup' ? 'Raise funding' : 'Find deals'}
+                            </div>
                           </div>
                         </div>
-                      </div>
-                    </label>
-                  ))}
+                      </label>
+                    ))}
+                  </div>
                 </div>
+              </>
+            )}
+
+            {/* email */}
+            <div>
+              <label style={{ fontSize: '0.78rem', fontWeight: 700, color: '#374151', marginBottom: 6, display: 'block', letterSpacing: '0.03em', textTransform: 'uppercase' }}>Email</label>
+              <div style={{ position: 'relative' }}>
+                <Mail size={15} strokeWidth={2} color="#94A3B8" style={{ position: 'absolute', left: 14, top: '50%', transform: 'translateY(-50%)', pointerEvents: 'none' }} />
+                <input className="auth-field-input" type="email" placeholder="you@example.com"
+                  value={form.email} onChange={e => setForm(c => ({ ...c, email: e.target.value }))} />
               </div>
-            </>
-          )}
-
-          {/* email */}
-          <div>
-            <label style={{ fontSize: '0.78rem', fontWeight: 700, color: '#374151', marginBottom: 6, display: 'block', letterSpacing: '0.03em', textTransform: 'uppercase' }}>Email</label>
-            <div style={{ position: 'relative' }}>
-              <Mail size={15} strokeWidth={2} color="#94A3B8" style={{ position: 'absolute', left: 14, top: '50%', transform: 'translateY(-50%)', pointerEvents: 'none' }} />
-              <input className="auth-field-input" type="email" placeholder="you@example.com"
-                value={form.email} onChange={e => setForm(c => ({ ...c, email: e.target.value }))} />
             </div>
-          </div>
 
-          {/* password */}
-          <div>
-            <label style={{ fontSize: '0.78rem', fontWeight: 700, color: '#374151', marginBottom: 6, display: 'block', letterSpacing: '0.03em', textTransform: 'uppercase' }}>Password</label>
-            <div style={{ position: 'relative' }}>
-              <Lock size={15} strokeWidth={2} color="#94A3B8" style={{ position: 'absolute', left: 14, top: '50%', transform: 'translateY(-50%)', pointerEvents: 'none' }} />
-              <input className="auth-field-input" type="password" placeholder="••••••••"
-                value={form.password} onChange={e => setForm(c => ({ ...c, password: e.target.value }))} />
+            {/* password */}
+            <div>
+              <label style={{ fontSize: '0.78rem', fontWeight: 700, color: '#374151', marginBottom: 6, display: 'block', letterSpacing: '0.03em', textTransform: 'uppercase' }}>Password</label>
+              <div style={{ position: 'relative' }}>
+                <Lock size={15} strokeWidth={2} color="#94A3B8" style={{ position: 'absolute', left: 14, top: '50%', transform: 'translateY(-50%)', pointerEvents: 'none' }} />
+                <input className="auth-field-input" type="password" placeholder="••••••••"
+                  value={form.password} onChange={e => setForm(c => ({ ...c, password: e.target.value }))} />
+              </div>
             </div>
-          </div>
 
-          {/* error */}
-          {error && (
-            <div style={{
-              display: 'flex', alignItems: 'center', gap: 8,
-              background: 'rgba(239,68,68,0.07)', border: '1px solid rgba(239,68,68,0.2)',
-              borderRadius: 10, padding: '10px 14px',
-              fontSize: '0.82rem', color: '#EF4444',
-            }}>
-              <AlertCircle size={14} strokeWidth={2} style={{ flexShrink: 0 }} />
-              {error}
-            </div>
-          )}
+            {/* error */}
+            {error && (
+              <div style={{
+                display: 'flex', alignItems: 'center', gap: 8,
+                background: 'rgba(239,68,68,0.07)', border: '1px solid rgba(239,68,68,0.2)',
+                borderRadius: 10, padding: '10px 14px',
+                fontSize: '0.82rem', color: '#EF4444',
+              }}>
+                <AlertCircle size={14} strokeWidth={2} style={{ flexShrink: 0 }} />
+                {error}
+              </div>
+            )}
 
-          <button type="submit" className="auth-submit-btn" disabled={loading}>
-            {loading ? 'Please wait…' : mode === 'register' ? 'Create account' : 'Sign in'}
-            {!loading && <ArrowRight size={15} strokeWidth={2.5} />}
-          </button>
-        </form>
+            <button type="submit" className="auth-submit-btn" disabled={loading}>
+              {loading ? 'Please wait…' : mode === 'register' ? 'Create account' : 'Sign in'}
+              {!loading && <ArrowRight size={15} strokeWidth={2.5} />}
+            </button>
+          </form>
         )}
 
         {/* footer */}

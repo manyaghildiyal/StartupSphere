@@ -260,7 +260,7 @@ export default function LandingPage({ data, onGetStarted }: LandingPageProps) {
             border: '1px solid rgba(79,126,247,0.15)',
           }}>
             <span style={{ width: 6, height: 6, borderRadius: '50%', background: '#4F7EF7', animation: 'pulse-dot 2s ease-in-out infinite' }} />
-            AI-Powered Startup Matchmaking
+            ML-Powered Startup Matchmaking
           </div>
 
           <h1 className="fa2" style={{
@@ -282,7 +282,7 @@ export default function LandingPage({ data, onGetStarted }: LandingPageProps) {
             margin: '0 auto 2.5rem',
             maxWidth: 520,
           }}>
-            StartuSphere uses ML algorithms to predict startup success, score compatibility,
+            StartupSphere uses ML algorithms to predict startup success, score compatibility,
             and connect founders with investors most likely to say yes.
           </p>
 
@@ -305,8 +305,8 @@ export default function LandingPage({ data, onGetStarted }: LandingPageProps) {
         }}>
           <div style={{ fontSize: '0.65rem', fontWeight: 700, color: '#94A3B8', letterSpacing: '0.1em', textTransform: 'uppercase', marginBottom: 10 }}>Match stats</div>
           {[
-            { label: 'Without StartuSphere', val: 8,  color: '#CBD5E1', active: false },
-            { label: 'With StartuSphere',    val: 75, color: '#4F7EF7', active: true  },
+            { label: 'Without StartupSphere', val: 8,  color: '#CBD5E1', active: false },
+            { label: 'With StartupSphere',    val: 75, color: '#4F7EF7', active: true  },
           ].map(r => (
             <div key={r.label} style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 8 }}>
               <div style={{ fontSize: '0.82rem', fontWeight: 700, color: r.active ? '#4F7EF7' : '#94A3B8', minWidth: 26 }}>{r.val}%</div>
@@ -400,7 +400,7 @@ export default function LandingPage({ data, onGetStarted }: LandingPageProps) {
             }}>
               <Sparkles size={22} color="#fff" strokeWidth={2} />
             </div>
-            <div style={{ fontSize: '0.72rem', fontWeight: 700, color: '#4F7EF7' }}>StartuSphere</div>
+            <div style={{ fontSize: '0.72rem', fontWeight: 700, color: '#4F7EF7' }}>StartupSphere</div>
             <div style={{ width: 1, height: 40, background: 'repeating-linear-gradient(180deg, #CBD5E1 0px, #CBD5E1 4px, transparent 4px, transparent 8px)' }} />
           </div>
 
@@ -580,7 +580,7 @@ export default function LandingPage({ data, onGetStarted }: LandingPageProps) {
           <p style={{ fontSize: '0.9rem', color: '#475569', lineHeight: 1.75, marginBottom: '2rem', maxWidth: 300 }}>
             Set your sectors, budget, and preferred stage. Our engine ranks every startup by compatibility and surfaces your next great investment.
           </p>
-          {['AI-ranked startup recommendations', 'Sector & budget filters', 'Direct in-platform messaging', 'Match score transparency'].map(p => (
+          {['ML-ranked startup recommendations', 'Sector & budget filters', 'Direct in-platform messaging', 'Match score transparency'].map(p => (
             <div key={p} className="check-item">
               <CheckCircle size={14} strokeWidth={2.5} color="#7B5EF8" style={{ flexShrink: 0 }} />
               {p}
@@ -615,7 +615,7 @@ export default function LandingPage({ data, onGetStarted }: LandingPageProps) {
             Ready to launch<br />your journey?
           </h2>
           <p style={{ fontSize: '1rem', color: 'rgba(255,255,255,0.75)', maxWidth: 440, lineHeight: 1.75, margin: 0 }}>
-            Join thousands of founders and investors already using StartuSphere to make the right connections.
+            Join thousands of founders and investors already using StartupSphere to make the right connections.
           </p>
         </div>
 
