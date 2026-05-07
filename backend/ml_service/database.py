@@ -24,15 +24,18 @@ def fetch_investors():
     # Join with users collection to get the name
     investors = list(db.investors.aggregate([
         {
-            "$addFields": {
-                "user_oid": { "$toObjectId": "$userId" }
-            }
-        },
-        {
             "$lookup": {
                 "from": "users",
-                "localField": "user_oid",
-                "foreignField": "_id",
+                "let": { "uid": "$userId" },
+                "pipeline": [
+                    { 
+                        "$match": { 
+                            "$expr": { 
+                                "$eq": [{ "$toString": "$_id" }, "$$uid"] 
+                            } 
+                        } 
+                    }
+                ],
                 "as": "user_info"
             }
         },
