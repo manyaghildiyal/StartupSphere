@@ -11,7 +11,7 @@ export type StartupProfile = {
   stage: Stage; pitchDeckName: string
 }
 export type InvestorProfile = {
-  userId: string; investmentSectors: string[]
+  userId: string; name?: string; investmentSectors: string[]
   investmentAmount: number; preferredStage: Stage
 }
 export type ContactRequest = {

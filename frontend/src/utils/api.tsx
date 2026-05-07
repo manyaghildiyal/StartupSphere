@@ -33,6 +33,7 @@ export type StartupProfile = {
 
 export type InvestorProfile = {
   userId: string
+  name?: string
   investmentSectors: string[]
   investmentAmount: number
   preferredStage: 'idea' | 'mvp' | 'growth' | 'scale'

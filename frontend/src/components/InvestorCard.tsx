@@ -1,4 +1,4 @@
-import { Briefcase, DollarSign, Zap, Send, CheckCircle, Target, User } from 'lucide-react'
+import { DollarSign, Zap, Send, CheckCircle, Target, User } from 'lucide-react'
 import type { InvestorProfile } from '../utils/api'
 import { fmt } from '../utils/ml'
 
